@@ -1,6 +1,13 @@
 .svelte-kit
+.wrangler
 build
 node_modules
+
 .env*
 !.env.example
-**/kanaschool_db.sqlite
+
+.DS_Store
+Thumbs.db
+
+kanaschool_db.sqlite
+my-svelte-app
