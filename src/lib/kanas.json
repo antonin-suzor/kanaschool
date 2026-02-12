@@ -1,0 +1,1152 @@
+[
+  { "id": 1, "reading": "a", "is_katakana": 0, "mod": 0, "consonant_line": "-", "vowel_column": "a", "unicode": "あ" },
+  { "id": 2, "reading": "i", "is_katakana": 0, "mod": 0, "consonant_line": "-", "vowel_column": "i", "unicode": "い" },
+  { "id": 3, "reading": "u", "is_katakana": 0, "mod": 0, "consonant_line": "-", "vowel_column": "u", "unicode": "う" },
+  { "id": 4, "reading": "e", "is_katakana": 0, "mod": 0, "consonant_line": "-", "vowel_column": "e", "unicode": "え" },
+  { "id": 5, "reading": "o", "is_katakana": 0, "mod": 0, "consonant_line": "-", "vowel_column": "o", "unicode": "お" },
+  { "id": 6, "reading": "ka", "is_katakana": 0, "mod": 0, "consonant_line": "k", "vowel_column": "a", "unicode": "か" },
+  { "id": 7, "reading": "ki", "is_katakana": 0, "mod": 0, "consonant_line": "k", "vowel_column": "i", "unicode": "き" },
+  { "id": 8, "reading": "ku", "is_katakana": 0, "mod": 0, "consonant_line": "k", "vowel_column": "u", "unicode": "く" },
+  { "id": 9, "reading": "ke", "is_katakana": 0, "mod": 0, "consonant_line": "k", "vowel_column": "e", "unicode": "け" },
+  {
+    "id": 10,
+    "reading": "ko",
+    "is_katakana": 0,
+    "mod": 0,
+    "consonant_line": "k",
+    "vowel_column": "o",
+    "unicode": "こ"
+  },
+  {
+    "id": 11,
+    "reading": "ga",
+    "is_katakana": 0,
+    "mod": 1,
+    "consonant_line": "k",
+    "vowel_column": "a",
+    "unicode": "が"
+  },
+  {
+    "id": 12,
+    "reading": "gi",
+    "is_katakana": 0,
+    "mod": 1,
+    "consonant_line": "k",
+    "vowel_column": "i",
+    "unicode": "ぎ"
+  },
+  {
+    "id": 13,
+    "reading": "gu",
+    "is_katakana": 0,
+    "mod": 1,
+    "consonant_line": "k",
+    "vowel_column": "u",
+    "unicode": "ぐ"
+  },
+  {
+    "id": 14,
+    "reading": "ge",
+    "is_katakana": 0,
+    "mod": 1,
+    "consonant_line": "k",
+    "vowel_column": "e",
+    "unicode": "げ"
+  },
+  {
+    "id": 15,
+    "reading": "go",
+    "is_katakana": 0,
+    "mod": 1,
+    "consonant_line": "k",
+    "vowel_column": "o",
+    "unicode": "ご"
+  },
+  {
+    "id": 16,
+    "reading": "sa",
+    "is_katakana": 0,
+    "mod": 0,
+    "consonant_line": "s",
+    "vowel_column": "a",
+    "unicode": "さ"
+  },
+  {
+    "id": 17,
+    "reading": "shi",
+    "is_katakana": 0,
+    "mod": 0,
+    "consonant_line": "s",
+    "vowel_column": "i",
+    "unicode": "し"
+  },
+  {
+    "id": 18,
+    "reading": "su",
+    "is_katakana": 0,
+    "mod": 0,
+    "consonant_line": "s",
+    "vowel_column": "u",
+    "unicode": "す"
+  },
+  {
+    "id": 19,
+    "reading": "se",
+    "is_katakana": 0,
+    "mod": 0,
+    "consonant_line": "s",
+    "vowel_column": "e",
+    "unicode": "せ"
+  },
+  {
+    "id": 20,
+    "reading": "so",
+    "is_katakana": 0,
+    "mod": 0,
+    "consonant_line": "s",
+    "vowel_column": "o",
+    "unicode": "そ"
+  },
+  {
+    "id": 21,
+    "reading": "za",
+    "is_katakana": 0,
+    "mod": 1,
+    "consonant_line": "s",
+    "vowel_column": "a",
+    "unicode": "ざ"
+  },
+  {
+    "id": 22,
+    "reading": "ji",
+    "is_katakana": 0,
+    "mod": 1,
+    "consonant_line": "s",
+    "vowel_column": "i",
+    "unicode": "じ"
+  },
+  {
+    "id": 23,
+    "reading": "zu",
+    "is_katakana": 0,
+    "mod": 1,
+    "consonant_line": "s",
+    "vowel_column": "u",
+    "unicode": "ず"
+  },
+  {
+    "id": 24,
+    "reading": "ze",
+    "is_katakana": 0,
+    "mod": 1,
+    "consonant_line": "s",
+    "vowel_column": "e",
+    "unicode": "ぜ"
+  },
+  {
+    "id": 25,
+    "reading": "zo",
+    "is_katakana": 0,
+    "mod": 1,
+    "consonant_line": "s",
+    "vowel_column": "o",
+    "unicode": "ぞ"
+  },
+  {
+    "id": 26,
+    "reading": "ta",
+    "is_katakana": 0,
+    "mod": 0,
+    "consonant_line": "t",
+    "vowel_column": "a",
+    "unicode": "た"
+  },
+  {
+    "id": 27,
+    "reading": "chi",
+    "is_katakana": 0,
+    "mod": 0,
+    "consonant_line": "t",
+    "vowel_column": "i",
+    "unicode": "ち"
+  },
+  {
+    "id": 28,
+    "reading": "tsu",
+    "is_katakana": 0,
+    "mod": 0,
+    "consonant_line": "t",
+    "vowel_column": "u",
+    "unicode": "つ"
+  },
+  {
+    "id": 29,
+    "reading": "te",
+    "is_katakana": 0,
+    "mod": 0,
+    "consonant_line": "t",
+    "vowel_column": "e",
+    "unicode": "て"
+  },
+  {
+    "id": 30,
+    "reading": "to",
+    "is_katakana": 0,
+    "mod": 0,
+    "consonant_line": "t",
+    "vowel_column": "o",
+    "unicode": "と"
+  },
+  {
+    "id": 31,
+    "reading": "da",
+    "is_katakana": 0,
+    "mod": 1,
+    "consonant_line": "t",
+    "vowel_column": "a",
+    "unicode": "だ"
+  },
+  {
+    "id": 32,
+    "reading": "ji",
+    "is_katakana": 0,
+    "mod": 1,
+    "consonant_line": "t",
+    "vowel_column": "i",
+    "unicode": "ぢ"
+  },
+  {
+    "id": 33,
+    "reading": "zu",
+    "is_katakana": 0,
+    "mod": 1,
+    "consonant_line": "t",
+    "vowel_column": "u",
+    "unicode": "づ"
+  },
+  {
+    "id": 34,
+    "reading": "de",
+    "is_katakana": 0,
+    "mod": 1,
+    "consonant_line": "t",
+    "vowel_column": "e",
+    "unicode": "で"
+  },
+  {
+    "id": 35,
+    "reading": "do",
+    "is_katakana": 0,
+    "mod": 1,
+    "consonant_line": "t",
+    "vowel_column": "o",
+    "unicode": "ど"
+  },
+  {
+    "id": 36,
+    "reading": "na",
+    "is_katakana": 0,
+    "mod": 0,
+    "consonant_line": "n",
+    "vowel_column": "a",
+    "unicode": "な"
+  },
+  {
+    "id": 37,
+    "reading": "ni",
+    "is_katakana": 0,
+    "mod": 0,
+    "consonant_line": "n",
+    "vowel_column": "i",
+    "unicode": "に"
+  },
+  {
+    "id": 38,
+    "reading": "nu",
+    "is_katakana": 0,
+    "mod": 0,
+    "consonant_line": "n",
+    "vowel_column": "u",
+    "unicode": "ぬ"
+  },
+  {
+    "id": 39,
+    "reading": "ne",
+    "is_katakana": 0,
+    "mod": 0,
+    "consonant_line": "n",
+    "vowel_column": "e",
+    "unicode": "ね"
+  },
+  {
+    "id": 40,
+    "reading": "no",
+    "is_katakana": 0,
+    "mod": 0,
+    "consonant_line": "n",
+    "vowel_column": "o",
+    "unicode": "の"
+  },
+  {
+    "id": 41,
+    "reading": "ha",
+    "is_katakana": 0,
+    "mod": 0,
+    "consonant_line": "h",
+    "vowel_column": "a",
+    "unicode": "は"
+  },
+  {
+    "id": 42,
+    "reading": "hi",
+    "is_katakana": 0,
+    "mod": 0,
+    "consonant_line": "h",
+    "vowel_column": "i",
+    "unicode": "ひ"
+  },
+  {
+    "id": 43,
+    "reading": "fu",
+    "is_katakana": 0,
+    "mod": 0,
+    "consonant_line": "h",
+    "vowel_column": "u",
+    "unicode": "ふ"
+  },
+  {
+    "id": 44,
+    "reading": "he",
+    "is_katakana": 0,
+    "mod": 0,
+    "consonant_line": "h",
+    "vowel_column": "e",
+    "unicode": "へ"
+  },
+  {
+    "id": 45,
+    "reading": "ho",
+    "is_katakana": 0,
+    "mod": 0,
+    "consonant_line": "h",
+    "vowel_column": "o",
+    "unicode": "ほ"
+  },
+  {
+    "id": 46,
+    "reading": "ba",
+    "is_katakana": 0,
+    "mod": 1,
+    "consonant_line": "h",
+    "vowel_column": "a",
+    "unicode": "ば"
+  },
+  {
+    "id": 47,
+    "reading": "bi",
+    "is_katakana": 0,
+    "mod": 1,
+    "consonant_line": "h",
+    "vowel_column": "i",
+    "unicode": "び"
+  },
+  {
+    "id": 48,
+    "reading": "bu",
+    "is_katakana": 0,
+    "mod": 1,
+    "consonant_line": "h",
+    "vowel_column": "u",
+    "unicode": "ぶ"
+  },
+  {
+    "id": 49,
+    "reading": "be",
+    "is_katakana": 0,
+    "mod": 1,
+    "consonant_line": "h",
+    "vowel_column": "e",
+    "unicode": "べ"
+  },
+  {
+    "id": 50,
+    "reading": "bo",
+    "is_katakana": 0,
+    "mod": 1,
+    "consonant_line": "h",
+    "vowel_column": "o",
+    "unicode": "ぼ"
+  },
+  {
+    "id": 51,
+    "reading": "pa",
+    "is_katakana": 0,
+    "mod": 2,
+    "consonant_line": "h",
+    "vowel_column": "a",
+    "unicode": "ぱ"
+  },
+  {
+    "id": 52,
+    "reading": "pi",
+    "is_katakana": 0,
+    "mod": 2,
+    "consonant_line": "h",
+    "vowel_column": "i",
+    "unicode": "ぴ"
+  },
+  {
+    "id": 53,
+    "reading": "pu",
+    "is_katakana": 0,
+    "mod": 2,
+    "consonant_line": "h",
+    "vowel_column": "u",
+    "unicode": "ぷ"
+  },
+  {
+    "id": 54,
+    "reading": "pe",
+    "is_katakana": 0,
+    "mod": 2,
+    "consonant_line": "h",
+    "vowel_column": "e",
+    "unicode": "ぺ"
+  },
+  {
+    "id": 55,
+    "reading": "po",
+    "is_katakana": 0,
+    "mod": 2,
+    "consonant_line": "h",
+    "vowel_column": "o",
+    "unicode": "ぽ"
+  },
+  {
+    "id": 56,
+    "reading": "ma",
+    "is_katakana": 0,
+    "mod": 0,
+    "consonant_line": "m",
+    "vowel_column": "a",
+    "unicode": "ま"
+  },
+  {
+    "id": 57,
+    "reading": "mi",
+    "is_katakana": 0,
+    "mod": 0,
+    "consonant_line": "m",
+    "vowel_column": "i",
+    "unicode": "み"
+  },
+  {
+    "id": 58,
+    "reading": "mu",
+    "is_katakana": 0,
+    "mod": 0,
+    "consonant_line": "m",
+    "vowel_column": "u",
+    "unicode": "む"
+  },
+  {
+    "id": 59,
+    "reading": "me",
+    "is_katakana": 0,
+    "mod": 0,
+    "consonant_line": "m",
+    "vowel_column": "e",
+    "unicode": "め"
+  },
+  {
+    "id": 60,
+    "reading": "mo",
+    "is_katakana": 0,
+    "mod": 0,
+    "consonant_line": "m",
+    "vowel_column": "o",
+    "unicode": "も"
+  },
+  {
+    "id": 61,
+    "reading": "ya",
+    "is_katakana": 0,
+    "mod": 0,
+    "consonant_line": "y",
+    "vowel_column": "a",
+    "unicode": "や"
+  },
+  {
+    "id": 62,
+    "reading": "yu",
+    "is_katakana": 0,
+    "mod": 0,
+    "consonant_line": "y",
+    "vowel_column": "u",
+    "unicode": "ゆ"
+  },
+  {
+    "id": 63,
+    "reading": "yo",
+    "is_katakana": 0,
+    "mod": 0,
+    "consonant_line": "y",
+    "vowel_column": "o",
+    "unicode": "よ"
+  },
+  {
+    "id": 64,
+    "reading": "ra",
+    "is_katakana": 0,
+    "mod": 0,
+    "consonant_line": "r",
+    "vowel_column": "a",
+    "unicode": "ら"
+  },
+  {
+    "id": 65,
+    "reading": "ri",
+    "is_katakana": 0,
+    "mod": 0,
+    "consonant_line": "r",
+    "vowel_column": "i",
+    "unicode": "り"
+  },
+  {
+    "id": 66,
+    "reading": "ru",
+    "is_katakana": 0,
+    "mod": 0,
+    "consonant_line": "r",
+    "vowel_column": "u",
+    "unicode": "る"
+  },
+  {
+    "id": 67,
+    "reading": "re",
+    "is_katakana": 0,
+    "mod": 0,
+    "consonant_line": "r",
+    "vowel_column": "e",
+    "unicode": "れ"
+  },
+  {
+    "id": 68,
+    "reading": "ro",
+    "is_katakana": 0,
+    "mod": 0,
+    "consonant_line": "r",
+    "vowel_column": "o",
+    "unicode": "ろ"
+  },
+  {
+    "id": 69,
+    "reading": "wa",
+    "is_katakana": 0,
+    "mod": 0,
+    "consonant_line": "w",
+    "vowel_column": "a",
+    "unicode": "わ"
+  },
+  {
+    "id": 70,
+    "reading": "wo",
+    "is_katakana": 0,
+    "mod": 0,
+    "consonant_line": "w",
+    "vowel_column": "o",
+    "unicode": "を"
+  },
+  { "id": 71, "reading": "n", "is_katakana": 0, "mod": 0, "consonant_line": "w", "vowel_column": "-", "unicode": "ん" },
+  { "id": 72, "reading": "a", "is_katakana": 1, "mod": 0, "consonant_line": "-", "vowel_column": "a", "unicode": "ア" },
+  { "id": 73, "reading": "i", "is_katakana": 1, "mod": 0, "consonant_line": "-", "vowel_column": "i", "unicode": "イ" },
+  { "id": 74, "reading": "u", "is_katakana": 1, "mod": 0, "consonant_line": "-", "vowel_column": "u", "unicode": "ウ" },
+  { "id": 75, "reading": "e", "is_katakana": 1, "mod": 0, "consonant_line": "-", "vowel_column": "e", "unicode": "エ" },
+  { "id": 76, "reading": "o", "is_katakana": 1, "mod": 0, "consonant_line": "-", "vowel_column": "o", "unicode": "オ" },
+  {
+    "id": 77,
+    "reading": "ka",
+    "is_katakana": 1,
+    "mod": 0,
+    "consonant_line": "k",
+    "vowel_column": "a",
+    "unicode": "カ"
+  },
+  {
+    "id": 78,
+    "reading": "ki",
+    "is_katakana": 1,
+    "mod": 0,
+    "consonant_line": "k",
+    "vowel_column": "i",
+    "unicode": "キ"
+  },
+  {
+    "id": 79,
+    "reading": "ku",
+    "is_katakana": 1,
+    "mod": 0,
+    "consonant_line": "k",
+    "vowel_column": "u",
+    "unicode": "ク"
+  },
+  {
+    "id": 80,
+    "reading": "ke",
+    "is_katakana": 1,
+    "mod": 0,
+    "consonant_line": "k",
+    "vowel_column": "e",
+    "unicode": "ケ"
+  },
+  {
+    "id": 81,
+    "reading": "ko",
+    "is_katakana": 1,
+    "mod": 0,
+    "consonant_line": "k",
+    "vowel_column": "o",
+    "unicode": "コ"
+  },
+  {
+    "id": 82,
+    "reading": "ga",
+    "is_katakana": 1,
+    "mod": 1,
+    "consonant_line": "k",
+    "vowel_column": "a",
+    "unicode": "ガ"
+  },
+  {
+    "id": 83,
+    "reading": "gi",
+    "is_katakana": 1,
+    "mod": 1,
+    "consonant_line": "k",
+    "vowel_column": "i",
+    "unicode": "ギ"
+  },
+  {
+    "id": 84,
+    "reading": "gu",
+    "is_katakana": 1,
+    "mod": 1,
+    "consonant_line": "k",
+    "vowel_column": "u",
+    "unicode": "グ"
+  },
+  {
+    "id": 85,
+    "reading": "ge",
+    "is_katakana": 1,
+    "mod": 1,
+    "consonant_line": "k",
+    "vowel_column": "e",
+    "unicode": "ゲ"
+  },
+  {
+    "id": 86,
+    "reading": "go",
+    "is_katakana": 1,
+    "mod": 1,
+    "consonant_line": "k",
+    "vowel_column": "o",
+    "unicode": "ゴ"
+  },
+  {
+    "id": 87,
+    "reading": "sa",
+    "is_katakana": 1,
+    "mod": 0,
+    "consonant_line": "s",
+    "vowel_column": "a",
+    "unicode": "サ"
+  },
+  {
+    "id": 88,
+    "reading": "shi",
+    "is_katakana": 1,
+    "mod": 0,
+    "consonant_line": "s",
+    "vowel_column": "i",
+    "unicode": "シ"
+  },
+  {
+    "id": 89,
+    "reading": "su",
+    "is_katakana": 1,
+    "mod": 0,
+    "consonant_line": "s",
+    "vowel_column": "u",
+    "unicode": "ス"
+  },
+  {
+    "id": 90,
+    "reading": "se",
+    "is_katakana": 1,
+    "mod": 0,
+    "consonant_line": "s",
+    "vowel_column": "e",
+    "unicode": "セ"
+  },
+  {
+    "id": 91,
+    "reading": "so",
+    "is_katakana": 1,
+    "mod": 0,
+    "consonant_line": "s",
+    "vowel_column": "o",
+    "unicode": "ソ"
+  },
+  {
+    "id": 92,
+    "reading": "za",
+    "is_katakana": 1,
+    "mod": 1,
+    "consonant_line": "s",
+    "vowel_column": "a",
+    "unicode": "ザ"
+  },
+  {
+    "id": 93,
+    "reading": "ji",
+    "is_katakana": 1,
+    "mod": 1,
+    "consonant_line": "s",
+    "vowel_column": "i",
+    "unicode": "ジ"
+  },
+  {
+    "id": 94,
+    "reading": "zu",
+    "is_katakana": 1,
+    "mod": 1,
+    "consonant_line": "s",
+    "vowel_column": "u",
+    "unicode": "ズ"
+  },
+  {
+    "id": 95,
+    "reading": "ze",
+    "is_katakana": 1,
+    "mod": 1,
+    "consonant_line": "s",
+    "vowel_column": "e",
+    "unicode": "ゼ"
+  },
+  {
+    "id": 96,
+    "reading": "zo",
+    "is_katakana": 1,
+    "mod": 1,
+    "consonant_line": "s",
+    "vowel_column": "o",
+    "unicode": "ゾ"
+  },
+  {
+    "id": 97,
+    "reading": "ta",
+    "is_katakana": 1,
+    "mod": 0,
+    "consonant_line": "t",
+    "vowel_column": "a",
+    "unicode": "タ"
+  },
+  {
+    "id": 98,
+    "reading": "chi",
+    "is_katakana": 1,
+    "mod": 0,
+    "consonant_line": "t",
+    "vowel_column": "i",
+    "unicode": "チ"
+  },
+  {
+    "id": 99,
+    "reading": "tsu",
+    "is_katakana": 1,
+    "mod": 0,
+    "consonant_line": "t",
+    "vowel_column": "u",
+    "unicode": "ツ"
+  },
+  {
+    "id": 100,
+    "reading": "te",
+    "is_katakana": 1,
+    "mod": 0,
+    "consonant_line": "t",
+    "vowel_column": "e",
+    "unicode": "テ"
+  },
+  {
+    "id": 101,
+    "reading": "to",
+    "is_katakana": 1,
+    "mod": 0,
+    "consonant_line": "t",
+    "vowel_column": "o",
+    "unicode": "ト"
+  },
+  {
+    "id": 102,
+    "reading": "da",
+    "is_katakana": 1,
+    "mod": 1,
+    "consonant_line": "t",
+    "vowel_column": "a",
+    "unicode": "ダ"
+  },
+  {
+    "id": 103,
+    "reading": "ji",
+    "is_katakana": 1,
+    "mod": 1,
+    "consonant_line": "t",
+    "vowel_column": "i",
+    "unicode": "ヂ"
+  },
+  {
+    "id": 104,
+    "reading": "zu",
+    "is_katakana": 1,
+    "mod": 1,
+    "consonant_line": "t",
+    "vowel_column": "u",
+    "unicode": "ヅ"
+  },
+  {
+    "id": 105,
+    "reading": "de",
+    "is_katakana": 1,
+    "mod": 1,
+    "consonant_line": "t",
+    "vowel_column": "e",
+    "unicode": "デ"
+  },
+  {
+    "id": 106,
+    "reading": "do",
+    "is_katakana": 1,
+    "mod": 1,
+    "consonant_line": "t",
+    "vowel_column": "o",
+    "unicode": "ド"
+  },
+  {
+    "id": 107,
+    "reading": "na",
+    "is_katakana": 1,
+    "mod": 0,
+    "consonant_line": "n",
+    "vowel_column": "a",
+    "unicode": "ナ"
+  },
+  {
+    "id": 108,
+    "reading": "ni",
+    "is_katakana": 1,
+    "mod": 0,
+    "consonant_line": "n",
+    "vowel_column": "i",
+    "unicode": "ニ"
+  },
+  {
+    "id": 109,
+    "reading": "nu",
+    "is_katakana": 1,
+    "mod": 0,
+    "consonant_line": "n",
+    "vowel_column": "u",
+    "unicode": "ヌ"
+  },
+  {
+    "id": 110,
+    "reading": "ne",
+    "is_katakana": 1,
+    "mod": 0,
+    "consonant_line": "n",
+    "vowel_column": "e",
+    "unicode": "ネ"
+  },
+  {
+    "id": 111,
+    "reading": "no",
+    "is_katakana": 1,
+    "mod": 0,
+    "consonant_line": "n",
+    "vowel_column": "o",
+    "unicode": "ノ"
+  },
+  {
+    "id": 112,
+    "reading": "ha",
+    "is_katakana": 1,
+    "mod": 0,
+    "consonant_line": "h",
+    "vowel_column": "a",
+    "unicode": "ハ"
+  },
+  {
+    "id": 113,
+    "reading": "hi",
+    "is_katakana": 1,
+    "mod": 0,
+    "consonant_line": "h",
+    "vowel_column": "i",
+    "unicode": "ヒ"
+  },
+  {
+    "id": 114,
+    "reading": "fu",
+    "is_katakana": 1,
+    "mod": 0,
+    "consonant_line": "h",
+    "vowel_column": "u",
+    "unicode": "フ"
+  },
+  {
+    "id": 115,
+    "reading": "he",
+    "is_katakana": 1,
+    "mod": 0,
+    "consonant_line": "h",
+    "vowel_column": "e",
+    "unicode": "ヘ"
+  },
+  {
+    "id": 116,
+    "reading": "ho",
+    "is_katakana": 1,
+    "mod": 0,
+    "consonant_line": "h",
+    "vowel_column": "o",
+    "unicode": "ホ"
+  },
+  {
+    "id": 117,
+    "reading": "ba",
+    "is_katakana": 1,
+    "mod": 1,
+    "consonant_line": "h",
+    "vowel_column": "a",
+    "unicode": "バ"
+  },
+  {
+    "id": 118,
+    "reading": "bi",
+    "is_katakana": 1,
+    "mod": 1,
+    "consonant_line": "h",
+    "vowel_column": "i",
+    "unicode": "ビ"
+  },
+  {
+    "id": 119,
+    "reading": "bu",
+    "is_katakana": 1,
+    "mod": 1,
+    "consonant_line": "h",
+    "vowel_column": "u",
+    "unicode": "ブ"
+  },
+  {
+    "id": 120,
+    "reading": "be",
+    "is_katakana": 1,
+    "mod": 1,
+    "consonant_line": "h",
+    "vowel_column": "e",
+    "unicode": "ベ"
+  },
+  {
+    "id": 121,
+    "reading": "bo",
+    "is_katakana": 1,
+    "mod": 1,
+    "consonant_line": "h",
+    "vowel_column": "o",
+    "unicode": "ボ"
+  },
+  {
+    "id": 122,
+    "reading": "pa",
+    "is_katakana": 1,
+    "mod": 2,
+    "consonant_line": "h",
+    "vowel_column": "a",
+    "unicode": "パ"
+  },
+  {
+    "id": 123,
+    "reading": "pi",
+    "is_katakana": 1,
+    "mod": 2,
+    "consonant_line": "h",
+    "vowel_column": "i",
+    "unicode": "ピ"
+  },
+  {
+    "id": 124,
+    "reading": "pu",
+    "is_katakana": 1,
+    "mod": 2,
+    "consonant_line": "h",
+    "vowel_column": "u",
+    "unicode": "プ"
+  },
+  {
+    "id": 125,
+    "reading": "pe",
+    "is_katakana": 1,
+    "mod": 2,
+    "consonant_line": "h",
+    "vowel_column": "e",
+    "unicode": "ペ"
+  },
+  {
+    "id": 126,
+    "reading": "po",
+    "is_katakana": 1,
+    "mod": 2,
+    "consonant_line": "h",
+    "vowel_column": "o",
+    "unicode": "ポ"
+  },
+  {
+    "id": 127,
+    "reading": "ma",
+    "is_katakana": 1,
+    "mod": 0,
+    "consonant_line": "m",
+    "vowel_column": "a",
+    "unicode": "マ"
+  },
+  {
+    "id": 128,
+    "reading": "mi",
+    "is_katakana": 1,
+    "mod": 0,
+    "consonant_line": "m",
+    "vowel_column": "i",
+    "unicode": "ミ"
+  },
+  {
+    "id": 129,
+    "reading": "mu",
+    "is_katakana": 1,
+    "mod": 0,
+    "consonant_line": "m",
+    "vowel_column": "u",
+    "unicode": "ム"
+  },
+  {
+    "id": 130,
+    "reading": "me",
+    "is_katakana": 1,
+    "mod": 0,
+    "consonant_line": "m",
+    "vowel_column": "e",
+    "unicode": "メ"
+  },
+  {
+    "id": 131,
+    "reading": "mo",
+    "is_katakana": 1,
+    "mod": 0,
+    "consonant_line": "m",
+    "vowel_column": "o",
+    "unicode": "モ"
+  },
+  {
+    "id": 132,
+    "reading": "ya",
+    "is_katakana": 1,
+    "mod": 0,
+    "consonant_line": "y",
+    "vowel_column": "a",
+    "unicode": "ヤ"
+  },
+  {
+    "id": 133,
+    "reading": "yu",
+    "is_katakana": 1,
+    "mod": 0,
+    "consonant_line": "y",
+    "vowel_column": "u",
+    "unicode": "ユ"
+  },
+  {
+    "id": 134,
+    "reading": "yo",
+    "is_katakana": 1,
+    "mod": 0,
+    "consonant_line": "y",
+    "vowel_column": "o",
+    "unicode": "ヨ"
+  },
+  {
+    "id": 135,
+    "reading": "ra",
+    "is_katakana": 1,
+    "mod": 0,
+    "consonant_line": "r",
+    "vowel_column": "a",
+    "unicode": "ラ"
+  },
+  {
+    "id": 136,
+    "reading": "ri",
+    "is_katakana": 1,
+    "mod": 0,
+    "consonant_line": "r",
+    "vowel_column": "i",
+    "unicode": "リ"
+  },
+  {
+    "id": 137,
+    "reading": "ru",
+    "is_katakana": 1,
+    "mod": 0,
+    "consonant_line": "r",
+    "vowel_column": "u",
+    "unicode": "ル"
+  },
+  {
+    "id": 138,
+    "reading": "re",
+    "is_katakana": 1,
+    "mod": 0,
+    "consonant_line": "r",
+    "vowel_column": "e",
+    "unicode": "レ"
+  },
+  {
+    "id": 139,
+    "reading": "ro",
+    "is_katakana": 1,
+    "mod": 0,
+    "consonant_line": "r",
+    "vowel_column": "o",
+    "unicode": "ロ"
+  },
+  {
+    "id": 140,
+    "reading": "wa",
+    "is_katakana": 1,
+    "mod": 0,
+    "consonant_line": "w",
+    "vowel_column": "a",
+    "unicode": "ワ"
+  },
+  {
+    "id": 141,
+    "reading": "wo",
+    "is_katakana": 1,
+    "mod": 0,
+    "consonant_line": "w",
+    "vowel_column": "o",
+    "unicode": "ヲ"
+  },
+  { "id": 142, "reading": "n", "is_katakana": 1, "mod": 0, "consonant_line": "w", "vowel_column": "-", "unicode": "ン" }
+]
