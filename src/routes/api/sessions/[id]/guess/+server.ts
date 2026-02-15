@@ -1,10 +1,14 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit';
-import { getDb } from '$lib/db';
+import * as db from '$lib/db';
 
-export const POST: RequestHandler = async ({ request, params, locals }) => {
+export const POST: RequestHandler = async ({ request, params, locals, platform }) => {
     if (!locals.user) {
         return json({ error: 'Not authenticated' }, { status: 401 });
+    }
+
+    if (!platform?.env.D1_DB) {
+        return json({ error: 'Database not available' }, { status: 500 });
     }
 
     const sessionId = parseInt(params.id || '', 10);
@@ -21,30 +25,20 @@ export const POST: RequestHandler = async ({ request, params, locals }) => {
 
     const { kanaId, isCorrect } = body;
 
-    const db = getDb();
-
-    // Verify session ownership
-    const session = db
-        .query('SELECT * FROM sessions WHERE id = ? AND user_id = ? AND deleted_at IS NULL')
-        .get(sessionId, locals.user.id) as any;
-
-    if (!session) {
-        return json({ error: 'Session not found' }, { status: 404 });
-    }
-
     try {
-        const now = new Date().toISOString();
+        // Verify session ownership
+        const session = await db.getUserSession(platform.env.D1_DB, sessionId, locals.user.id);
+
+        if (!session) {
+            return json({ error: 'Session not found' }, { status: 404 });
+        }
 
         // Calculate mult_position: count how many times this kana has been guessed in this session
-        const previousGuesses = db
-            .query('SELECT COUNT(*) as count FROM session_kanas WHERE session_id = ? AND kana_id = ?')
-            .get(sessionId, kanaId) as { count: number };
+        const previousGuesses = await db.getGuessCountForKanaInSession(platform.env.D1_DB, sessionId, kanaId);
 
-        const multPosition = previousGuesses.count + 1;
+        const multPosition = previousGuesses + 1;
 
-        db.prepare(
-            'INSERT INTO session_kanas (session_id, kana_id, mult_position, submitted_at, is_correct) VALUES (?, ?, ?, ?, ?)'
-        ).run(sessionId, kanaId, multPosition, now, isCorrect ? 1 : 0);
+        await db.recordGuess(platform.env.D1_DB, sessionId, kanaId, isCorrect, multPosition);
 
         return json({ success: true });
     } catch (error) {

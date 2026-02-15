@@ -1,10 +1,14 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit';
-import { getDb } from '$lib/db';
+import * as db from '$lib/db';
 
-export const POST: RequestHandler = async ({ request, locals }) => {
+export const POST: RequestHandler = async ({ request, locals, platform }) => {
     if (!locals.user) {
         return json({ error: 'Not authenticated' }, { status: 401 });
+    }
+
+    if (!platform?.env.D1_DB) {
+        return json({ error: 'Database not available' }, { status: 500 });
     }
 
     let body;
@@ -20,24 +24,17 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         return json({ error: 'Missing sessionId or isPublic' }, { status: 400 });
     }
 
-    const db = getDb();
-
-    // Verify session ownership
-    const session = db
-        .query('SELECT * FROM sessions WHERE id = ? AND user_id = ? AND deleted_at IS NULL')
-        .get(sessionId, locals.user.id) as any;
-
-    if (!session) {
-        return json({ error: 'Session not found' }, { status: 404 });
-    }
-
     try {
-        const now = new Date().toISOString();
-        db.prepare('UPDATE sessions SET is_public = ?, updated_at = ? WHERE id = ?').run(
-            isPublic ? 1 : 0,
-            now,
-            sessionId
-        );
+        const database = platform.env.D1_DB;
+
+        // Verify session ownership
+        const session = await db.getUserSession(database, sessionId, locals.user.id);
+
+        if (!session) {
+            return json({ error: 'Session not found' }, { status: 404 });
+        }
+
+        await db.updateSessionVisibility(database, sessionId, isPublic);
 
         return json({ success: true });
     } catch (error) {

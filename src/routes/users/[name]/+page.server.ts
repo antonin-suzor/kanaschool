@@ -1,15 +1,17 @@
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import { getDb } from '$lib/db';
+import * as db from '$lib/db';
 
-export const load: PageServerLoad = async ({ params, locals }) => {
+export const load: PageServerLoad = async ({ params, locals, platform }) => {
+    if (!platform?.env.D1_DB) {
+        throw error(500, 'Database not available');
+    }
+
     const username = params.name;
-    const db = getDb();
+    const database = platform.env.D1_DB;
 
     // Get the user
-    const user = db
-        .query('SELECT id, name, is_public, created_at, updated_at FROM users WHERE name = ? AND deleted_at IS NULL')
-        .get(username) as any;
+    const user = await db.getUserPublicProfile(database, username);
 
     if (!user) {
         throw error(404, 'User not found');
@@ -22,30 +24,11 @@ export const load: PageServerLoad = async ({ params, locals }) => {
     }
 
     // Get user statistics
-    const totalSessions = db
-        .query('SELECT COUNT(*) as count FROM sessions WHERE user_id = ? AND deleted_at IS NULL')
-        .get(user.id) as { count: number };
-
-    const finishedSessions = db
-        .query(
-            'SELECT COUNT(*) as count FROM sessions WHERE user_id = ? AND deleted_at IS NULL AND finished_at IS NOT NULL'
-        )
-        .get(user.id) as { count: number };
+    const totalSessions = await db.getUserSessionCount(database, user.id);
+    const finishedSessions = await db.getFinishedSessionCount(database, user.id);
 
     // All-time correctness
-    const allTimeStats = db
-        .query(
-            `
-        SELECT
-            COUNT(*) as total,
-            SUM(CASE WHEN is_correct = 1 THEN 1 ELSE 0 END) as correct
-        FROM session_kanas
-        WHERE session_id IN (
-            SELECT id FROM sessions WHERE user_id = ? AND deleted_at IS NULL
-        )
-    `
-        )
-        .get(user.id) as { total: number; correct: number };
+    const allTimeStats = await db.getUserAnswerStats(database, user.id);
 
     const allTimePercentage =
         allTimeStats.total > 0 ? Math.round((allTimeStats.correct / allTimeStats.total) * 100) : 0;
@@ -55,19 +38,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
     const thirtyDaysAgoISO = thirtyDaysAgo.toISOString();
 
-    const lastMonthStats = db
-        .query(
-            `
-        SELECT
-            COUNT(*) as total,
-            SUM(CASE WHEN is_correct = 1 THEN 1 ELSE 0 END) as correct
-        FROM session_kanas
-        WHERE session_id IN (
-            SELECT id FROM sessions WHERE user_id = ? AND deleted_at IS NULL AND created_at >= ?
-        )
-    `
-        )
-        .get(user.id, thirtyDaysAgoISO) as { total: number; correct: number };
+    const lastMonthStats = await db.getUserDateRangeAnswerStats(database, user.id, thirtyDaysAgoISO);
 
     const lastMonthPercentage =
         lastMonthStats.total > 0 ? Math.round((lastMonthStats.correct / lastMonthStats.total) * 100) : 0;
@@ -77,35 +48,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
     const limit = 10;
     const offset = page * limit;
 
-    let sessionQuery = `
-        SELECT
-            s.id,
-            s.hiragana,
-            s.katakana,
-            s.mods,
-            s.mult,
-            s.is_public,
-            s.created_at,
-            s.finished_at,
-            COUNT(sk.id) as total_guesses,
-            SUM(CASE WHEN sk.is_correct = 1 THEN 1 ELSE 0 END) as correct_guesses
-        FROM sessions s
-        LEFT JOIN session_kanas sk ON s.id = sk.session_id
-        WHERE s.user_id = ? AND s.deleted_at IS NULL
-    `;
-
-    // If not viewing own profile, only show finished public sessions
-    if (!isOwnProfile) {
-        sessionQuery += ` AND s.is_public = 1`;
-    }
-
-    sessionQuery += `
-        GROUP BY s.id
-        ORDER BY s.created_at DESC
-        LIMIT ? OFFSET ?
-    `;
-
-    const sessions = db.query(sessionQuery).all(user.id, limit, offset) as any[];
+    const sessions = await db.getUserSessionsWithStats(database, user.id, limit, offset, isOwnProfile);
 
     const sessionList = sessions.map((s) => ({
         id: s.id,
@@ -123,8 +66,8 @@ export const load: PageServerLoad = async ({ params, locals }) => {
     return {
         user,
         stats: {
-            totalSessions: totalSessions.count,
-            finishedSessions: finishedSessions.count,
+            totalSessions,
+            finishedSessions,
             allTimePercentage,
             lastMonthPercentage,
         },

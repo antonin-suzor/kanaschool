@@ -1,13 +1,7 @@
-import { getDb } from './db';
-import type { AuthUser, User } from './types';
-
-export async function hashPassword(password: string): Promise<string> {
-    return await Bun.password.hash(password);
-}
-
-export async function verifyPassword(password: string, hash: string): Promise<boolean> {
-    return await Bun.password.verify(password, hash);
-}
+import { hashPassword, verifyPassword } from './crypto';
+import type { D1Database } from '@cloudflare/workers-types';
+import type { AuthUser } from './types';
+import * as db from './db';
 
 export function isValidUsername(username: string): boolean {
     if (!username || username.trim().length === 0) {
@@ -21,35 +15,19 @@ export function isValidPassword(password: string): boolean {
     return Boolean(password && password.length > 0);
 }
 
-export function getUserById(id: number): AuthUser | null {
-    const db = getDb();
-    const result = db.query('SELECT id, name, is_public FROM users WHERE id = ? AND deleted_at IS NULL').get(id) as
-        | (Omit<AuthUser, 'is_public'> & { is_public: number })
-        | undefined;
-
-    if (!result) return null;
-
-    return {
-        ...result,
-        is_public: Boolean(result.is_public),
-    };
+export async function getUserById(database: D1Database, id: number): Promise<AuthUser | null> {
+    return db.getUserById(database, id);
 }
 
-export function getUserByName(name: string): AuthUser | null {
-    const db = getDb();
-    const result = db.query('SELECT id, name, is_public FROM users WHERE name = ? AND deleted_at IS NULL').get(name) as
-        | (Omit<AuthUser, 'is_public'> & { is_public: number })
-        | undefined;
-
-    if (!result) return null;
-
-    return {
-        ...result,
-        is_public: Boolean(result.is_public),
-    };
+export async function getUserByName(database: D1Database, name: string): Promise<AuthUser | null> {
+    return db.getUserByName(database, name);
 }
 
-export async function signup(name: string, password: string): Promise<{ user: AuthUser } | { error: string }> {
+export async function signup(
+    database: D1Database,
+    name: string,
+    password: string
+): Promise<{ user: AuthUser } | { error: string }> {
     if (!isValidUsername(name)) {
         return { error: 'Username must be URL-friendly (alphanumeric, hyphens, underscores only)' };
     }
@@ -58,26 +36,16 @@ export async function signup(name: string, password: string): Promise<{ user: Au
         return { error: 'Password cannot be empty' };
     }
 
-    const db = getDb();
-
     // Check if user already exists
-    const existing = db.query('SELECT id FROM users WHERE name = ? AND deleted_at IS NULL').get(name) as
-        | { id: number }
-        | undefined;
-
+    const existing = await db.userExists(database, name);
     if (existing) {
         return { error: 'Username already taken' };
     }
 
     const passwordHash = await hashPassword(password);
-    const now = new Date().toISOString();
 
     try {
-        db.query(
-            'INSERT INTO users (name, password_hash, is_public, created_at, updated_at) VALUES (?, ?, ?, ?, ?)'
-        ).run(name, passwordHash, 0, now, now);
-
-        const user = getUserByName(name);
+        const user = await db.createUser(database, name, passwordHash);
         if (!user) {
             return { error: 'Failed to create user' };
         }
@@ -88,12 +56,12 @@ export async function signup(name: string, password: string): Promise<{ user: Au
     }
 }
 
-export async function login(name: string, password: string): Promise<{ user: AuthUser } | { error: string }> {
-    const db = getDb();
-
-    const result = db
-        .query('SELECT id, name, is_public, password_hash FROM users WHERE name = ? AND deleted_at IS NULL')
-        .get(name) as (Omit<AuthUser, 'is_public'> & { is_public: number; password_hash: string }) | undefined;
+export async function login(
+    database: D1Database,
+    name: string,
+    password: string
+): Promise<{ user: AuthUser } | { error: string }> {
+    const result = await db.getUserWithPassword(database, name);
 
     if (!result) {
         return { error: 'Invalid username or password' };
@@ -105,14 +73,16 @@ export async function login(name: string, password: string): Promise<{ user: Aut
     }
 
     const user: AuthUser = {
-        ...result,
-        is_public: Boolean(result.is_public),
+        id: result.id,
+        name: result.name,
+        is_public: result.is_public,
     };
 
     return { user };
 }
 
 export async function updatePassword(
+    database: D1Database,
     userId: number,
     oldPassword: string,
     newPassword: string
@@ -121,12 +91,8 @@ export async function updatePassword(
         return { error: 'New password cannot be empty' };
     }
 
-    const db = getDb();
-
     // Get user with password hash
-    const result = db.query('SELECT id, password_hash FROM users WHERE id = ? AND deleted_at IS NULL').get(userId) as
-        | { id: number; password_hash: string }
-        | undefined;
+    const result = await db.getUserPasswordHash(database, userId);
 
     if (!result) {
         return { error: 'User not found' };
@@ -140,10 +106,9 @@ export async function updatePassword(
 
     // Hash new password
     const newPasswordHash = await hashPassword(newPassword);
-    const now = new Date().toISOString();
 
     try {
-        db.prepare('UPDATE users SET password_hash = ?, updated_at = ? WHERE id = ?').run(newPasswordHash, now, userId);
+        await db.updateUserPassword(database, userId, newPasswordHash);
         return { success: true };
     } catch (error) {
         return { error: 'Failed to update password' };
@@ -151,6 +116,7 @@ export async function updatePassword(
 }
 
 export async function updateUsername(
+    database: D1Database,
     userId: number,
     newUsername: string
 ): Promise<{ user: AuthUser } | { error: string }> {
@@ -158,23 +124,17 @@ export async function updateUsername(
         return { error: 'Username must be URL-friendly (alphanumeric, hyphens, underscores only)' };
     }
 
-    const db = getDb();
-
     // Check if new username is already taken (by someone else)
-    const existing = db
-        .query('SELECT id FROM users WHERE name = ? AND id != ? AND deleted_at IS NULL')
-        .get(newUsername, userId) as { id: number } | undefined;
+    const existing = await db.usernameIsTaken(database, newUsername, userId);
 
     if (existing) {
         return { error: 'Username already taken' };
     }
 
-    const now = new Date().toISOString();
-
     try {
-        db.prepare('UPDATE users SET name = ?, updated_at = ? WHERE id = ?').run(newUsername, now, userId);
+        await db.updateUsername(database, userId, newUsername);
 
-        const user = getUserById(userId);
+        const user = await db.getUserById(database, userId);
         if (!user) {
             return { error: 'Failed to update username' };
         }
@@ -185,26 +145,26 @@ export async function updateUsername(
     }
 }
 
-export function updateProfileVisibility(userId: number, isPublic: boolean): { success: true } | { error: string } {
-    const db = getDb();
-
-    const now = new Date().toISOString();
-
+export async function updateProfileVisibility(
+    database: D1Database,
+    userId: number,
+    isPublic: boolean
+): Promise<{ success: true } | { error: string }> {
     try {
-        db.prepare('UPDATE users SET is_public = ?, updated_at = ? WHERE id = ?').run(isPublic ? 1 : 0, now, userId);
+        await db.updateUserVisibility(database, userId, isPublic);
         return { success: true };
     } catch (error) {
         return { error: 'Failed to update profile visibility' };
     }
 }
 
-export async function deleteAccount(userId: number, password: string): Promise<{ success: true } | { error: string }> {
-    const db = getDb();
-
+export async function deleteAccount(
+    database: D1Database,
+    userId: number,
+    password: string
+): Promise<{ success: true } | { error: string }> {
     // Get user with password hash
-    const result = db.query('SELECT id, password_hash FROM users WHERE id = ? AND deleted_at IS NULL').get(userId) as
-        | { id: number; password_hash: string }
-        | undefined;
+    const result = await db.getUserPasswordHash(database, userId);
 
     if (!result) {
         return { error: 'User not found' };
@@ -216,24 +176,22 @@ export async function deleteAccount(userId: number, password: string): Promise<{
         return { error: 'Password is incorrect' };
     }
 
-    const now = new Date().toISOString();
-
     try {
         // Soft delete the user
-        db.prepare('UPDATE users SET deleted_at = ?, updated_at = ? WHERE id = ?').run(now, now, userId);
+        await db.softDeleteUser(database, userId);
         return { success: true };
     } catch (error) {
         return { error: 'Failed to delete account' };
     }
 }
 
-export function deleteSession(userId: number, sessionId: number): { success: true } | { error: string } {
-    const db = getDb();
-
+export async function deleteSession(
+    database: D1Database,
+    userId: number,
+    sessionId: number
+): Promise<{ success: true } | { error: string }> {
     // Get session and verify ownership
-    const session = db.query('SELECT id, user_id FROM sessions WHERE id = ? AND deleted_at IS NULL').get(sessionId) as
-        | { id: number; user_id: number }
-        | undefined;
+    const session = await db.getUserSession(database, sessionId, userId);
 
     if (!session) {
         return { error: 'Session not found' };
@@ -243,11 +201,9 @@ export function deleteSession(userId: number, sessionId: number): { success: tru
         return { error: 'You do not have permission to delete this session' };
     }
 
-    const now = new Date().toISOString();
-
     try {
         // Soft delete the session
-        db.prepare('UPDATE sessions SET deleted_at = ?, updated_at = ? WHERE id = ?').run(now, now, sessionId);
+        await db.softDeleteSession(database, sessionId);
         return { success: true };
     } catch (error) {
         return { error: 'Failed to delete session' };

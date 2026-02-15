@@ -1,17 +1,21 @@
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import { getDb } from '$lib/db';
+import * as db from '$lib/db';
 
-export const load: PageServerLoad = async ({ params, locals }) => {
+export const load: PageServerLoad = async ({ params, locals, platform }) => {
     const sessionId = parseInt(params.id, 10);
     if (isNaN(sessionId)) {
         throw error(400, 'Invalid session ID');
     }
 
-    const db = getDb();
+    if (!platform?.env.D1_DB) {
+        throw error(500, 'Database not available');
+    }
+
+    const database = platform.env.D1_DB;
 
     // Get session
-    const session = db.query('SELECT * FROM sessions WHERE id = ? AND deleted_at IS NULL').get(sessionId) as any;
+    const session = await db.getSession(database, sessionId);
 
     if (!session) {
         throw error(404, 'Session not found');
@@ -36,44 +40,19 @@ export const load: PageServerLoad = async ({ params, locals }) => {
     // Get remaining kanas for this session (only if not finished)
     let remainingKanas: any[] = [];
     if (!isFinished) {
-        remainingKanas = db
-            .query(
-                `
-            SELECT k.* FROM kanas k
-            WHERE
-                ((k.is_katakana = 0 AND ? = 1) OR
-                (k.is_katakana = 1 AND ? = 1))
-            AND (k.mod = 0 OR (k.mod > 0 AND ? = 1))
-            AND (
-                k.id NOT IN (
-                    SELECT kana_id FROM session_kanas
-                    WHERE session_id = ?
-                )
-                OR k.id IN (
-                    SELECT kana_id FROM session_kanas
-                    WHERE session_id = ?
-                    GROUP BY kana_id
-                    HAVING COUNT(*) < ?
-                )
-            )
-            ORDER BY RANDOM()
-        `
-            )
-            .all(session.hiragana, session.katakana, session.mods, sessionId, sessionId, session.mult) as any[];
+        const rawKanas = await db.getRemainingKanasForSession(database, sessionId, session);
+        remainingKanas = rawKanas.map((k) => ({
+            ...k,
+            is_katakana: Boolean(k.is_katakana),
+        })) as any[];
     }
 
     // Get already guessed kanas with their results
-    const guessedKanas = db
-        .query(
-            `
-        SELECT k.*, sk.is_correct
-        FROM session_kanas sk
-        JOIN kanas k ON sk.kana_id = k.id
-        WHERE sk.session_id = ?
-        ORDER BY sk.submitted_at ASC
-    `
-        )
-        .all(sessionId) as any[];
+    const rawGuessedKanas = await db.getSessionGuessedKanas(database, sessionId);
+    const guessedKanas = rawGuessedKanas.map((k) => ({
+        ...k,
+        is_katakana: Boolean(k.is_katakana),
+    })) as any[];
 
     return {
         session,

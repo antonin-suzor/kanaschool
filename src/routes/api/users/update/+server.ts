@@ -2,10 +2,16 @@ import { json } from '@sveltejs/kit';
 import { updatePassword, updateUsername, updateProfileVisibility, deleteAccount, deleteSession } from '$lib/auth';
 import type { RequestHandler } from '@sveltejs/kit';
 
-export const POST: RequestHandler = async ({ request, locals, cookies }) => {
+export const POST: RequestHandler = async ({ request, locals, cookies, platform }) => {
     if (!locals.user) {
         return json({ error: 'Unauthorized' }, { status: 401 });
     }
+
+    if (!platform?.env.D1_DB) {
+        return json({ error: 'Database not available' }, { status: 500 });
+    }
+
+    const db = platform.env.D1_DB;
 
     try {
         const body = await request.json();
@@ -20,7 +26,7 @@ export const POST: RequestHandler = async ({ request, locals, cookies }) => {
                 return json({ error: 'Old password and new password are required' }, { status: 400 });
             }
 
-            const result = await updatePassword(locals.user.id, oldPassword, newPassword);
+            const result = await updatePassword(db, locals.user.id, oldPassword, newPassword);
 
             if ('error' in result) {
                 return json({ error: result.error }, { status: 400 });
@@ -34,7 +40,7 @@ export const POST: RequestHandler = async ({ request, locals, cookies }) => {
                 return json({ error: 'New username is required' }, { status: 400 });
             }
 
-            const result = await updateUsername(locals.user.id, newUsername);
+            const result = await updateUsername(db, locals.user.id, newUsername);
 
             if ('error' in result) {
                 return json({ error: result.error }, { status: 400 });
@@ -57,7 +63,7 @@ export const POST: RequestHandler = async ({ request, locals, cookies }) => {
                 return json({ error: 'isPublic must be a boolean' }, { status: 400 });
             }
 
-            const result = updateProfileVisibility(locals.user.id, isPublic);
+            const result = await updateProfileVisibility(db, locals.user.id, isPublic);
 
             if ('error' in result) {
                 return json({ error: result.error }, { status: 400 });
@@ -81,7 +87,7 @@ export const POST: RequestHandler = async ({ request, locals, cookies }) => {
                 return json({ error: 'Password is required' }, { status: 400 });
             }
 
-            const result = await deleteAccount(locals.user.id, password);
+            const result = await deleteAccount(db, locals.user.id, password);
 
             if ('error' in result) {
                 return json({ error: result.error }, { status: 400 });
@@ -98,7 +104,7 @@ export const POST: RequestHandler = async ({ request, locals, cookies }) => {
                 return json({ error: 'Session ID is required' }, { status: 400 });
             }
 
-            const result = deleteSession(locals.user.id, sessionId);
+            const result = await deleteSession(db, locals.user.id, sessionId);
 
             if ('error' in result) {
                 return json({ error: result.error }, { status: 400 });

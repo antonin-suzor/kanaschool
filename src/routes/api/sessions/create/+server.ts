@@ -1,10 +1,14 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit';
-import { getDb } from '$lib/db';
+import * as db from '$lib/db';
 
-export const POST: RequestHandler = async ({ request, locals }) => {
+export const POST: RequestHandler = async ({ request, locals, platform }) => {
     if (!locals.user) {
         return json({ error: 'Not authenticated' }, { status: 401 });
+    }
+
+    if (!platform?.env.D1_DB) {
+        return json({ error: 'Database not available' }, { status: 500 });
     }
 
     let sessionConfig;
@@ -22,17 +26,19 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     mods = Number(mods);
     mult = Number(mult);
 
-    const db = getDb();
-    const now = new Date().toISOString();
+    const database = platform.env.D1_DB;
 
     try {
-        const result = db
-            .prepare(
-                'INSERT INTO sessions (user_id, is_public, hiragana, katakana, mods, mult, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
-            )
-            .run(locals.user.id, 0, hiragana, katakana, mods, mult, now, now);
+        const sessionId = await db.createSession(database, locals.user.id, {
+            hiragana,
+            katakana,
+            mods,
+            mult,
+        });
 
-        const sessionId = result.lastInsertRowid;
+        if (!sessionId) {
+            return json({ error: 'Failed to create session' }, { status: 500 });
+        }
 
         return json({ sessionId });
     } catch (error) {

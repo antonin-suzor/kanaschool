@@ -1,7 +1,7 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit';
 
-export const POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request, platform }) => {
     try {
         const body = await request.json();
         const { message } = body;
@@ -10,7 +10,7 @@ export const POST: RequestHandler = async ({ request }) => {
             return json({ error: 'Message is required' }, { status: 400 });
         }
 
-        const discordWebhookUrl = process.env.DISCORD_WEBHOOK_URL;
+        const discordWebhookUrl = platform?.env?.DISCORD_WEBHOOK_URL;
         if (!discordWebhookUrl) {
             console.error('DISCORD_WEBHOOK_URL environment variable is not set');
             return json({ error: 'Server configuration error' }, { status: 500 });

@@ -113,7 +113,7 @@
                                 <div class="text-right text-sm text-gray-600">
                                     <p class="font-semibold">{formatDate(session.created_at)}</p>
                                     {#if session.isFinished}
-                                        <p class="text-xs text-gray-500">Completed {formatDate(session.finished_at)}</p>
+                                        <p class="text-xs text-gray-500">Completed {formatDate(session.finished_at!)}</p>
                                     {/if}
                                 </div>
                             </div>

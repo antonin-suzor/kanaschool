@@ -1,60 +1,53 @@
-import { getDb } from '$lib/db';
+import * as db from '$lib/db';
 
-export function load() {
-    const db = getDb();
+export async function load({ platform }) {
+    if (!platform?.env.D1_DB) {
+        return {
+            stats: {
+                sessions: {
+                    total: 0,
+                    lastMonth: 0,
+                },
+                correctAnswers: {
+                    allTime: 0,
+                    lastMonth: 0,
+                },
+                kanaRatio: {
+                    hiragana: 0,
+                    katakana: 0,
+                },
+                diacriticsRatio: {
+                    diacritics: 0,
+                    noDiacritics: 0,
+                },
+            },
+        };
+    }
+
+    const database = platform.env.D1_DB;
 
     // All-time sessions count
-    const totalSessions = db.query('SELECT COUNT(*) as count FROM sessions WHERE deleted_at IS NULL').get() as {
-        count: number;
-    };
+    const totalSessions = await db.getTotalSessionCount(database);
 
     // Sessions started in the last month
     const oneMonthAgo = new Date();
     oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
     const oneMonthAgoStr = oneMonthAgo.toISOString();
 
-    const sessionsLastMonth = db
-        .query('SELECT COUNT(*) as count FROM sessions WHERE deleted_at IS NULL AND created_at >= ?')
-        .get(oneMonthAgoStr) as { count: number };
+    const sessionsLastMonth = await db.getSessionsCreatedSinceDate(database, oneMonthAgoStr);
 
     // Percentage of good answers (all-time)
-    const allTimeAnswers = db
-        .query(
-            `SELECT 
-            COUNT(CASE WHEN is_correct = 1 THEN 1 END) as correct,
-            COUNT(*) as total
-        FROM session_kanas`
-        )
-        .get() as { correct: number; total: number };
-
+    const allTimeAnswers = await db.getAllTimeAnswerStats(database);
     const allTimeCorrectPercentage =
         allTimeAnswers.total > 0 ? Math.round((allTimeAnswers.correct / allTimeAnswers.total) * 100) : 0;
 
     // Percentage of good answers (last month)
-    const lastMonthAnswers = db
-        .query(
-            `SELECT 
-            COUNT(CASE WHEN is_correct = 1 THEN 1 END) as correct,
-            COUNT(*) as total
-        FROM session_kanas sk
-        WHERE sk.submitted_at >= ?`
-        )
-        .get(oneMonthAgoStr) as { correct: number; total: number };
-
+    const lastMonthAnswers = await db.getDateRangeAnswerStats(database, oneMonthAgoStr);
     const lastMonthCorrectPercentage =
         lastMonthAnswers.total > 0 ? Math.round((lastMonthAnswers.correct / lastMonthAnswers.total) * 100) : 0;
 
     // Hiragana/Katakana ratio
-    const kanaRatio = db
-        .query(
-            `SELECT 
-            COUNT(CASE WHEN k.is_katakana = 0 THEN 1 END) as hiragana_count,
-            COUNT(CASE WHEN k.is_katakana = 1 THEN 1 END) as katakana_count
-        FROM session_kanas sk
-        JOIN kanas k ON sk.kana_id = k.id`
-        )
-        .get() as { hiragana_count: number; katakana_count: number };
-
+    const kanaRatio = await db.getKanaRatioStats(database);
     const totalKanaAnswers = kanaRatio.hiragana_count + kanaRatio.katakana_count;
     const hiraganaPercentage =
         totalKanaAnswers > 0 ? Math.round((kanaRatio.hiragana_count / totalKanaAnswers) * 100) : 0;
@@ -62,16 +55,7 @@ export function load() {
         totalKanaAnswers > 0 ? Math.round((kanaRatio.katakana_count / totalKanaAnswers) * 100) : 0;
 
     // Diacritics/No-diacritics ratio
-    const diacriticsRatio = db
-        .query(
-            `SELECT 
-            COUNT(CASE WHEN k.mod = 0 THEN 1 END) as no_diacritics_count,
-            COUNT(CASE WHEN k.mod > 0 THEN 1 END) as diacritics_count
-        FROM session_kanas sk
-        JOIN kanas k ON sk.kana_id = k.id`
-        )
-        .get() as { no_diacritics_count: number; diacritics_count: number };
-
+    const diacriticsRatio = await db.getDiacriticsRatioStats(database);
     const totalDiacriticsAnswers = diacriticsRatio.no_diacritics_count + diacriticsRatio.diacritics_count;
     const diacriticsPercentage =
         totalDiacriticsAnswers > 0 ? Math.round((diacriticsRatio.diacritics_count / totalDiacriticsAnswers) * 100) : 0;
@@ -83,8 +67,8 @@ export function load() {
     return {
         stats: {
             sessions: {
-                total: totalSessions.count,
-                lastMonth: sessionsLastMonth.count,
+                total: totalSessions,
+                lastMonth: sessionsLastMonth,
             },
             correctAnswers: {
                 allTime: allTimeCorrectPercentage,

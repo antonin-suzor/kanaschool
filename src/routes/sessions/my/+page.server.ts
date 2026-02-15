@@ -1,66 +1,44 @@
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import { getDb } from '$lib/db';
+import * as db from '$lib/db';
 
-export const load: PageServerLoad = async ({ locals }) => {
+export const load: PageServerLoad = async ({ locals, platform }) => {
     if (!locals.user) {
         throw error(401, 'Not authenticated');
     }
 
-    const db = getDb();
+    if (!platform?.env.D1_DB) {
+        throw error(500, 'Database not available');
+    }
+
+    const database = platform.env.D1_DB;
 
     // Get unfinished sessions
-    const unfinishedSessions = db
-        .query(
-            `
-        SELECT * FROM sessions 
-        WHERE user_id = ? AND deleted_at IS NULL AND finished_at IS NULL
-        ORDER BY updated_at DESC
-        LIMIT 10
-    `
-        )
-        .all(locals.user.id) as any[];
+    const unfinishedSessions = await db.getUserUnfinishedSessions(database, locals.user.id);
 
     // Get finished sessions
-    const finishedSessions = db
-        .query(
-            `
-        SELECT * FROM sessions 
-        WHERE user_id = ? AND deleted_at IS NULL AND finished_at IS NOT NULL
-        ORDER BY updated_at DESC
-        LIMIT 10
-    `
-        )
-        .all(locals.user.id) as any[];
+    const finishedSessions = await db.getUserFinishedSessions(database, locals.user.id);
 
     // Calculate statistics for each session
-    const enrichSessions = (sessions: any[]) => {
-        return sessions.map((session) => {
-            const stats = db
-                .query(
-                    `
-                SELECT 
-                    COUNT(*) as total,
-                    SUM(CASE WHEN is_correct = 1 THEN 1 ELSE 0 END) as correct
-                FROM session_kanas
-                WHERE session_id = ?
-            `
-                )
-                .get(session.id) as { total: number; correct: number };
+    const enrichSessions = async (sessions: any[]) => {
+        const enriched = [];
+        for (const session of sessions) {
+            const stats = await db.getSessionAnswerStats(database, session.id);
 
             const percentage = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
 
-            return {
+            enriched.push({
                 ...session,
                 percentage,
                 lastInteraction: session.updated_at,
                 isFinished: !!session.finished_at,
-            };
-        });
+            });
+        }
+        return enriched;
     };
 
     return {
-        unfinishedSessions: enrichSessions(unfinishedSessions),
-        finishedSessions: enrichSessions(finishedSessions),
+        unfinishedSessions: await enrichSessions(unfinishedSessions),
+        finishedSessions: await enrichSessions(finishedSessions),
     };
 };

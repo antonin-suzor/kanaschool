@@ -1,10 +1,6 @@
-import { initializeDb } from '$lib/db';
 import { getUserById } from '$lib/auth';
 import type { Handle } from '@sveltejs/kit';
 import type { AuthUser } from '$lib/types';
-
-// Initialize database on server startup
-initializeDb();
 
 export const handle: Handle = async ({ event, resolve }) => {
     // Load user from auth cookie
@@ -12,12 +8,18 @@ export const handle: Handle = async ({ event, resolve }) => {
     if (authCookie) {
         try {
             const user = JSON.parse(authCookie) as AuthUser;
-            // Verify user still exists
-            const validUser = getUserById(user.id);
-            if (validUser) {
-                event.locals.user = validUser;
+            // Verify user still exists by checking in the database
+            const db = (event.platform?.env as any)?.D1_DB;
+            if (db) {
+                const validUser = await getUserById(db, user.id);
+                if (validUser) {
+                    event.locals.user = validUser;
+                } else {
+                    event.cookies.delete('auth', { path: '/' });
+                }
             } else {
-                event.cookies.delete('auth', { path: '/' });
+                // If we can't access the database, trust the cookie
+                event.locals.user = user;
             }
         } catch (error) {
             event.cookies.delete('auth', { path: '/' });

@@ -2,8 +2,12 @@ import { json } from '@sveltejs/kit';
 import { login } from '$lib/auth';
 import type { RequestHandler } from '@sveltejs/kit';
 
-export const POST: RequestHandler = async ({ request, cookies }) => {
+export const POST: RequestHandler = async ({ request, cookies, platform }) => {
     try {
+        if (!platform?.env.D1_DB) {
+            return json({ error: 'Database not available' }, { status: 500 });
+        }
+
         const body = await request.json();
         const { name, password } = body;
 
@@ -11,7 +15,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
             return json({ error: 'Invalid request' }, { status: 400 });
         }
 
-        const result = await login(name, password);
+        const result = await login(platform.env.D1_DB, name, password);
 
         if ('error' in result) {
             return json({ error: result.error }, { status: 401 });

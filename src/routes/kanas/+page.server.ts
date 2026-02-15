@@ -1,15 +1,19 @@
-import { getDb } from '$lib/db';
+import * as db from '$lib/db';
 import type { Kana } from '$lib/types';
 
-export async function load() {
-    const db = getDb();
+export async function load({ platform }) {
+    if (!platform?.env.D1_DB) {
+        return {
+            hiraganas: [],
+            katakanas: [],
+        };
+    }
 
-    const hiraganas = db.query('SELECT * FROM kanas WHERE is_katakana = 0 ORDER BY id ASC').all() as Kana[];
-
-    const katakanas = db.query('SELECT * FROM kanas WHERE is_katakana = 1 ORDER BY id ASC').all() as Kana[];
+    const hiraganas = await db.getHiraganas(platform.env.D1_DB);
+    const katakanas = await db.getKatakanas(platform.env.D1_DB);
 
     return {
-        hiraganas,
-        katakanas,
+        hiraganas: hiraganas as Kana[],
+        katakanas: katakanas as Kana[],
     };
 }
