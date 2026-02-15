@@ -1,12 +1,9 @@
-# For more details on how to configure Wrangler, refer to:
-# https://developers.cloudflare.com/workers/wrangler/configuration/
-
 name = "kanaschool"
 main = ".svelte-kit/cloudflare/_worker.js"
 compatibility_date = "2026-02-12"
 compatibility_flags = [
-	"nodejs_compat",
-	"nodejs_als"
+  "nodejs_compat",
+  "nodejs_als"
 ]
 
 [[routes]]

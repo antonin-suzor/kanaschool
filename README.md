@@ -1,6 +1,6 @@
 # kanaschool
 
-Learn Hiraganas and Katakanas the fun way.
+Learn Hiraganas and Katakanas the fun way: https://kanaschool.antonin-suzor.com/
 
 ## Tech stack
 
@@ -12,7 +12,6 @@ Learn Hiraganas and Katakanas the fun way.
 ## Roadmap
 
 - SHOULD HAVE (around march 2026):
-  - deployment on cloudflare (needs to switch the adapter+database to cloudflare+D1)
   - better user profiles, including profile picture and banners (via cloudflare R2)
 - MAY HAVE (not before april 2026):
   - admin dashboard (mostly for statistics on the website)
