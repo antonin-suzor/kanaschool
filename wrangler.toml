@@ -9,6 +9,10 @@ compatibility_flags = [
 	"nodejs_als"
 ]
 
+[[routes]]
+pattern = "kanaschool.antonin-suzor.com"
+custom_domain = true
+
 [assets]
 binding = "ASSETS"
 directory = ".svelte-kit/cloudflare"
