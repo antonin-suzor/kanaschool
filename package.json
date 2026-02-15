@@ -5,11 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev",
-    "build": "npm run check && vite build",
-    "preview": "npm run build && wrangler dev",
+    "build": "bun run check && vite build",
+    "preview": "bun run build && wrangler dev",
     "prepare": "svelte-kit sync",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-    "deploy": "npm run build && wrangler deploy",
     "lint": "prettier --check .",
     "format": "prettier --write ."
   },

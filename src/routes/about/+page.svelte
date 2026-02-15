@@ -38,13 +38,16 @@
                 </p>
                 <ul class="list-inside list-disc space-y-2">
                     <li>
-                        <strong>SvelteKit 2</strong> - A modern full-stack framework built on Svelte 5 for building fast web
-                        applications
+                        <strong>SvelteKit</strong> - A modern full-stack framework built on Svelte for building fast web applications
                     </li>
-                    <li><strong>Bun</strong> - A fast JavaScript runtime and package manager</li>
+                    <li>
+                        <strong>Cloudflare Workers</strong> - A serverless runtime for deploying globally distributed applications
+                    </li>
+                    <li><strong>Bun</strong> - A fast package manager for managing project dependencies</li>
                     <li><strong>TailwindCSS 4</strong> - A utility-first CSS framework for efficient styling</li>
-                    <li><strong>shadcn-svelte</strong> - A component library providing accessible UI components</li>
-                    <li><strong>SQLite</strong> - A lightweight, self-contained SQL database</li>
+                    <li>
+                        <strong>Cloudflare D1</strong> - A managed, serverless SQLite database provided by Cloudflare
+                    </li>
                 </ul>
             </section>
 

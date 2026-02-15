@@ -6,7 +6,7 @@ Learn Hiraganas and Katakanas the fun way.
 
 - SvelteKit (with Typescript)
 - Tailwind
-- Bun (will be replaced with cloudflare)
+- Cloudflare Workers (with D1 for database)
 - Prettier
 
 ## Roadmap
@@ -22,6 +22,4 @@ Learn Hiraganas and Katakanas the fun way.
 
 ## AI coding
 
-The first commit of this repo is 100% vibe-coded inside the `src/` file.
-A functional (page-by-page) design and database design was provided in `design.md`, the initial setup was made by hand, but the actual was 100% vibe-coded with github copilot, claude haiku 4.5.
-To get better results, the AI was not asked to implement the whole project at once, but was given smaller tasks, manually broken down by the developer. Previous attempts failed because the AI was asked too much at once.
+The whole app is vide-coded.

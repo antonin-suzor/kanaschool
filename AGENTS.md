@@ -5,7 +5,7 @@ This file contains essential information for agentic coding agents working on th
 ## Project Overview
 
 **Purpose**: Web application for learning Japanese hiragana and katakana
-**Stack**: SvelteKit + Svelte 5, TypeScript, Bun runtime, SQLite, TailwindCSS v4
+**Stack**: SvelteKit + Svelte 5, TypeScript, Cloudflare Workers, SQLite (via Cloudflare D1), TailwindCSS v4
 **Architecture**: Full-stack application with client-side training and server-side data persistence
 
 ## Development Commands
@@ -95,8 +95,8 @@ bun run preview
 
 ### Database & Auth
 
-- **SQLite** - Database via Bun's built-in support
-- **Bun password utilities** - Authentication hashing
+- **SQLite** - Lightweight, self-contained SQL database
+- **Bun password utilities** - Authentication hashing (via Node.js compatibility)
 
 ### Frontend
 
@@ -108,16 +108,15 @@ bun run preview
 Required environment variables:
 
 ```env
-SQLITE_FILE=kanaschool_db.sqlite
 DISCORD_WEBHOOK_URL=https://discordapp.com/api/webhooks/xxx/xxx
 ```
 
 ## Development Workflow
 
 1. **Install**: `bun install`
-2. **Type Check**: `bun --bun run check` (before any commit)
-3. **Format**: `bun --bun run format`
-4. **Build**: `bun --bun run build`
+2. **Type Check**: `bun run check` (before any commit)
+3. **Format**: `bun run format`
+4. **Build**: `bun run build`
 
 ## Architecture Notes
 
@@ -147,16 +146,17 @@ DISCORD_WEBHOOK_URL=https://discordapp.com/api/webhooks/xxx/xxx
 2. **Always use Svelte 5 runes** - no legacy Svelte reactivity
 3. **Soft deletes only** - never hard delete data
 4. **TypeScript strict** - all code must be fully typed
-5. **Run type checker** - `bun --bun run check` before committing
+5. **Run type checker** - `bun run check` before committing
 6. **Follow file organization** - keep types, utils, database logic separate
 
 ## Configuration Files
 
 - **TypeScript**: `tsconfig.json` (strict mode enabled)
-- **SvelteKit**: `svelte.config.js` (Bun adapter)
+- **SvelteKit**: `svelte.config.js` (Cloudflare Workers adapter)
 - **Vite**: `vite.config.ts` (build configuration)
 - **Prettier**: `.prettierrc.json` (code formatting)
 - **Tailwind**: Configured for v4 with modern features
+- **Wrangler**: `wrangler.toml` (Cloudflare Workers configuration)
 
 ## Design Philosophy
 
