@@ -5,7 +5,7 @@
     {
       "description": "Schedule CloudFlare-Workers-Types updates on first day of the month",
       "matchPackageNames": ["@cloudflare/workers-types"],
-      "schedule": ["0 0 1 * *"]
+      "schedule": ["* 0 1 * *"]
     }
   ]
 }
