@@ -1,5 +1,6 @@
 <script lang="ts">
     import { goto } from '$app/navigation';
+    import { createSession } from '../sessions.remote';
 
     let hiragana = $state(true);
     let katakana = $state(true);
@@ -39,20 +40,14 @@
 
         error = null;
 
-        const response = await fetch('/api/sessions/create', {
-            method: 'POST',
-            body: JSON.stringify({
-                hiragana: hiragana ? 1 : 0,
-                katakana: katakana ? 1 : 0,
-                mods: diacritics ? 1 : 0,
-                mult: Number(multiplier),
-            }),
+        const { sessionId } = await createSession({
+            hiragana: hiragana ? 1 : 0,
+            katakana: katakana ? 1 : 0,
+            mods: diacritics ? 1 : 0,
+            mult: Number(multiplier),
         });
 
-        if (response.ok) {
-            const { sessionId } = await response.json();
-            await goto(`/sessions/${sessionId}`);
-        }
+        await goto(`/sessions/${sessionId}`);
     }
 </script>
 

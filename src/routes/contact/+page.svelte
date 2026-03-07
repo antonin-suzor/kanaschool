@@ -1,26 +1,24 @@
 <script lang="ts">
-    let { form } = $props();
+    import { sendContactMessage } from './contact.remote';
+
     let message = $state('');
     let isSubmitting = $state(false);
+    let success = $state(false);
+    let submitError = $state('');
 
     async function handleSubmit() {
         if (!message.trim()) return;
 
         isSubmitting = true;
+        success = false;
+        submitError = '';
         try {
-            const response = await fetch('/api/contact/message', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ message: message.trim() }),
-            });
-
-            if (response.ok) {
-                message = '';
-            }
-        } catch (error) {
-            console.error('Error sending message:', error);
+            await sendContactMessage({ message: message.trim() });
+            message = '';
+            success = true;
+        } catch (err) {
+            console.error('Error sending message:', err);
+            submitError = err instanceof Error ? err.message : 'Failed to send message';
         } finally {
             isSubmitting = false;
         }
@@ -87,11 +85,11 @@
                         {isSubmitting ? 'Sending...' : 'Send Message'}
                     </button>
 
-                    {#if form?.success}
+                    {#if success}
                         <p class="text-green-600">Message sent successfully!</p>
                     {/if}
-                    {#if form?.error}
-                        <p class="text-red-600">{form.error}</p>
+                    {#if submitError}
+                        <p class="text-red-600">{submitError}</p>
                     {/if}
                 </form>
             </section>

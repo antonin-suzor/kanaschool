@@ -8,6 +8,9 @@ const config = {
         adapter: adapter({
             fallback: 'plaintext',
         }),
+        experimental: {
+            remoteFunctions: true,
+        },
     },
 };
 

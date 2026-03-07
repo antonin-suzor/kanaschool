@@ -1,5 +1,6 @@
 <script lang="ts">
     import { goto, invalidateAll } from '$app/navigation';
+    import { signupUser } from '../auth.remote';
 
     let name = $state('');
     let password = $state('');
@@ -27,25 +28,11 @@
 
         isLoading = true;
         try {
-            const response = await fetch('/api/users/signup', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ name: name.trim(), password }),
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                error = data.error || 'Signup failed';
-                return;
-            }
-
+            await signupUser({ name: name.trim(), password });
             await invalidateAll();
             await goto('/');
         } catch (err) {
-            error = 'An error occurred during signup';
+            error = err instanceof Error ? err.message : 'An error occurred during signup';
         } finally {
             isLoading = false;
         }

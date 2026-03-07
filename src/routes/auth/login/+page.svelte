@@ -1,5 +1,6 @@
 <script lang="ts">
     import { goto, invalidateAll } from '$app/navigation';
+    import { loginUser } from '../auth.remote';
 
     let name = $state('');
     let password = $state('');
@@ -16,25 +17,11 @@
 
         isLoading = true;
         try {
-            const response = await fetch('/api/users/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ name: name.trim(), password }),
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                error = data.error || 'Login failed';
-                return;
-            }
-
+            await loginUser({ name: name.trim(), password });
             await invalidateAll();
             await goto('/');
         } catch (err) {
-            error = 'An error occurred during login';
+            error = err instanceof Error ? err.message : 'An error occurred during login';
         } finally {
             isLoading = false;
         }

@@ -1,6 +1,7 @@
 <script lang="ts">
     import { goto, invalidateAll } from '$app/navigation';
     import type { PageData } from './$types';
+    import { updateSessionVisibility, deleteSession } from '../sessions.remote';
 
     let { data }: { data: PageData } = $props();
 
@@ -54,52 +55,33 @@
         e.preventDefault();
         e.stopPropagation();
         try {
-            const response = await fetch(`/api/sessions/${sessionId}/visibility`, {
-                method: 'POST',
-                body: JSON.stringify({
-                    sessionId,
-                    isPublic: currentPublic === 0,
-                }),
-            });
+            await updateSessionVisibility({ sessionId, isPublic: currentPublic === 0 });
 
-            if (response.ok) {
-                // Update local state
-                const allSessions = [...unfinishedSessions, ...finishedSessions];
-                const session = allSessions.find((s) => s.id === sessionId);
-                if (session) {
-                    session.is_public = currentPublic === 0 ? 1 : 0;
-                }
-                unfinishedSessions = unfinishedSessions;
-                finishedSessions = finishedSessions;
+            // Update local state
+            const allSessions = [...unfinishedSessions, ...finishedSessions];
+            const session = allSessions.find((s) => s.id === sessionId);
+            if (session) {
+                session.is_public = currentPublic === 0 ? 1 : 0;
             }
+            unfinishedSessions = unfinishedSessions;
+            finishedSessions = finishedSessions;
         } catch (error) {
             console.error('Error toggling visibility:', error);
         }
     }
 
-    async function deleteSession(e: Event, sessionId: number) {
+    async function handleDeleteSession(e: Event, sessionId: number) {
         e.preventDefault();
         e.stopPropagation();
 
         isDeleting = true;
         try {
-            const response = await fetch('/api/users/update', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    action: 'deleteSession',
-                    sessionId,
-                }),
-            });
+            await deleteSession({ sessionId });
 
-            if (response.ok) {
-                // Remove from local state
-                unfinishedSessions = unfinishedSessions.filter((s) => s.id !== sessionId);
-                finishedSessions = finishedSessions.filter((s) => s.id !== sessionId);
-                deleteConfirmId = null;
-            }
+            // Remove from local state
+            unfinishedSessions = unfinishedSessions.filter((s) => s.id !== sessionId);
+            finishedSessions = finishedSessions.filter((s) => s.id !== sessionId);
+            deleteConfirmId = null;
         } catch (error) {
             console.error('Error deleting session:', error);
         } finally {
@@ -163,7 +145,7 @@
                                                     Cancel
                                                 </button>
                                                 <button
-                                                    onclick={(e) => deleteSession(e, session.id)}
+                                                    onclick={(e) => handleDeleteSession(e, session.id)}
                                                     disabled={isDeleting}
                                                     class="flex-1 rounded bg-red-600 px-3 py-2 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-50"
                                                 >
@@ -250,7 +232,7 @@
                                                     Cancel
                                                 </button>
                                                 <button
-                                                    onclick={(e) => deleteSession(e, session.id)}
+                                                    onclick={(e) => handleDeleteSession(e, session.id)}
                                                     disabled={isDeleting}
                                                     class="flex-1 rounded bg-red-600 px-3 py-2 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-50"
                                                 >

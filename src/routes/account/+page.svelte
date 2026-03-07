@@ -1,6 +1,7 @@
 <script lang="ts">
     import { goto, invalidateAll } from '$app/navigation';
     import type { PageData } from './$types';
+    import { changePassword, changeUsername, changeVisibility, deleteUserAccount } from './account.remote';
 
     let { data }: { data: PageData } = $props();
 
@@ -69,31 +70,13 @@
 
         isLoading = true;
         try {
-            const response = await fetch('/api/users/update', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    action: 'updatePassword',
-                    oldPassword,
-                    newPassword,
-                }),
-            });
-
-            const responseData = await response.json();
-
-            if (!response.ok) {
-                showMessage(responseData.error || 'Failed to update password', 'error');
-                return;
-            }
-
+            await changePassword({ oldPassword, newPassword });
             oldPassword = '';
             newPassword = '';
             confirmPassword = '';
             showMessage('Password updated successfully', 'success');
         } catch (err) {
-            showMessage('An error occurred while updating password', 'error');
+            showMessage(err instanceof Error ? err.message : 'An error occurred while updating password', 'error');
         } finally {
             isLoading = false;
         }
@@ -116,29 +99,12 @@
 
         isLoading = true;
         try {
-            const response = await fetch('/api/users/update', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    action: 'updateUsername',
-                    newUsername: trimmedUsername,
-                }),
-            });
-
-            const responseData = await response.json();
-
-            if (!response.ok) {
-                showMessage(responseData.error || 'Failed to update username', 'error');
-                return;
-            }
-
+            await changeUsername({ newUsername: trimmedUsername });
             showMessage('Username updated successfully', 'success');
             await invalidateAll();
             await goto(`/users/${trimmedUsername}`);
         } catch (err) {
-            showMessage('An error occurred while updating username', 'error');
+            showMessage(err instanceof Error ? err.message : 'An error occurred while updating username', 'error');
         } finally {
             isLoading = false;
         }
@@ -149,28 +115,14 @@
 
         isLoading = true;
         try {
-            const response = await fetch('/api/users/update', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    action: 'updateVisibility',
-                    isPublic,
-                }),
-            });
-
-            const responseData = await response.json();
-
-            if (!response.ok) {
-                showMessage(responseData.error || 'Failed to update privacy setting', 'error');
-                return;
-            }
-
+            await changeVisibility({ isPublic });
             showMessage(isPublic ? 'Profile is now public' : 'Profile is now private', 'success');
             await invalidateAll();
         } catch (err) {
-            showMessage('An error occurred while updating privacy setting', 'error');
+            showMessage(
+                err instanceof Error ? err.message : 'An error occurred while updating privacy setting',
+                'error'
+            );
         } finally {
             isLoading = false;
         }
@@ -186,31 +138,13 @@
 
         isLoading = true;
         try {
-            const response = await fetch('/api/users/update', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    action: 'deleteAccount',
-                    password: deletePassword,
-                }),
-            });
-
-            const responseData = await response.json();
-
-            if (!response.ok) {
-                showMessage(responseData.error || 'Failed to delete account', 'error');
-                deletePassword = '';
-                showDeleteConfirm = false;
-                return;
-            }
-
+            await deleteUserAccount({ _password: deletePassword });
             await invalidateAll();
             await goto('/');
         } catch (err) {
-            showMessage('An error occurred while deleting account', 'error');
+            showMessage(err instanceof Error ? err.message : 'An error occurred while deleting account', 'error');
             deletePassword = '';
+            showDeleteConfirm = false;
         } finally {
             isLoading = false;
         }

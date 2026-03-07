@@ -1,6 +1,7 @@
 <script lang="ts">
     import '../app.css';
     import { goto, invalidateAll } from '$app/navigation';
+    import { logoutUser } from './auth/auth.remote';
 
     let { children, data } = $props();
 
@@ -9,7 +10,7 @@
     async function handleLogout() {
         isLoggingOut = true;
         try {
-            await fetch('/api/users/logout', { method: 'POST' });
+            await logoutUser();
             await invalidateAll();
             await goto('/');
         } finally {

@@ -3,6 +3,7 @@
     import { goto } from '$app/navigation';
     import type { PageData } from './$types';
     import { onMount } from 'svelte';
+    import { recordGuess, finishSession, deleteSession } from '../sessions.remote';
 
     let { data }: { data: PageData } = $props();
 
@@ -48,58 +49,51 @@
 
         isSubmitting = true;
         const isCorrect = userInput.toLowerCase() === currentKana.reading.toLowerCase();
+        const sessionId = parseInt(page.params.id || '', 10);
 
         try {
-            const response = await fetch(`/api/sessions/${page.params.id}/guess`, {
-                method: 'POST',
-                body: JSON.stringify({
-                    kanaId: currentKana.id,
-                    isCorrect,
-                }),
-            });
+            await recordGuess({ sessionId, kanaId: currentKana.id, isCorrect });
 
-            if (response.ok) {
-                // Update guessed list
-                guessedKanas = [
-                    ...guessedKanas,
-                    {
-                        ...currentKana,
-                        is_correct: isCorrect ? 1 : 0,
-                    },
-                ];
+            // Update guessed list
+            guessedKanas = [
+                ...guessedKanas,
+                {
+                    ...currentKana,
+                    is_correct: isCorrect ? 1 : 0,
+                },
+            ];
 
-                // Show feedback
-                if (isCorrect) {
-                    feedback = { type: 'correct', message: 'Correct!' };
-                } else {
-                    feedback = {
-                        type: 'incorrect',
-                        message: `Incorrect (you said: ${userInput}, correct: ${currentKana.reading})`,
-                    };
-                }
+            // Show feedback
+            if (isCorrect) {
+                feedback = { type: 'correct', message: 'Correct!' };
+            } else {
+                feedback = {
+                    type: 'incorrect',
+                    message: `Incorrect (you said: ${userInput}, correct: ${currentKana.reading})`,
+                };
+            }
 
-                // Remove from remaining
-                remainingKanas = remainingKanas.slice(1);
+            // Remove from remaining
+            remainingKanas = remainingKanas.slice(1);
 
-                // Move to next kana
-                if (remainingKanas.length > 0) {
-                    currentKana = remainingKanas[0];
-                    userInput = '';
-                    isSubmitting = false;
-                    // Refocus input after next kana is displayed
-                    setTimeout(() => {
-                        inputElement?.focus();
-                    }, 200);
-                } else {
-                    localSessionFinished = true;
-                    isSubmitting = false;
-                    // Finish the session
-                    finishSession();
-                    // Focus the continue link when session finishes
-                    setTimeout(() => {
-                        continueLink?.focus();
-                    }, 200);
-                }
+            // Move to next kana
+            if (remainingKanas.length > 0) {
+                currentKana = remainingKanas[0];
+                userInput = '';
+                isSubmitting = false;
+                // Refocus input after next kana is displayed
+                setTimeout(() => {
+                    inputElement?.focus();
+                }, 200);
+            } else {
+                localSessionFinished = true;
+                isSubmitting = false;
+                // Finish the session
+                doFinishSession(sessionId);
+                // Focus the continue link when session finishes
+                setTimeout(() => {
+                    continueLink?.focus();
+                }, 200);
             }
         } catch (error) {
             console.error('Error submitting guess:', error);
@@ -114,13 +108,11 @@
         }
     }
 
-    async function finishSession() {
-        const response = await fetch(`/api/sessions/${page.params.id}/finish`, {
-            method: 'POST',
-        });
-
-        if (!response.ok) {
-            console.error('Error finishing session');
+    async function doFinishSession(sessionId: number) {
+        try {
+            await finishSession({ sessionId });
+        } catch (error) {
+            console.error('Error finishing session:', error);
         }
     }
 
@@ -128,21 +120,8 @@
         isDeleting = true;
         const sessionId = parseInt(page.params.id || '0', 10);
         try {
-            const response = await fetch('/api/users/update', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    action: 'deleteSession',
-                    sessionId,
-                }),
-            });
-
-            if (response.ok) {
-                // Redirect to sessions page after deletion
-                await goto('/sessions/my');
-            }
+            await deleteSession({ sessionId });
+            await goto('/sessions/my');
         } catch (error) {
             console.error('Error deleting session:', error);
             isDeleting = false;
