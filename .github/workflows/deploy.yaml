@@ -15,17 +15,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
-      - name: Bump package.json version to match tag
-        run: |
-          jq --arg v ${GITHUB_REF_NAME#v} '.version = $v' package.json > package.json.tmp
-          mv package.json.tmp package.json
-
-      - name: Commit version bump
-        run: |
-          git add package.json
-          git commit -m "Bump app version to ${{ github.ref_name }}"
-          git push origin HEAD:main
-
       - name: Install Bun
         uses: oven-sh/setup-bun@v2
 
@@ -34,6 +23,19 @@ jobs:
 
       - name: Build project
         run: bun run build
+
+      - name: Bump package.json version to match tag
+        run: |
+          jq --arg v ${GITHUB_REF_NAME#v} '.version = $v' package.json > package.json.tmp
+          mv package.json.tmp package.json
+
+      - name: Commit version bump
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.gith
+          git add package.json
+          git commit -m "Bump app version to ${{ github.ref_name }}"
+          git push origin HEAD:main
 
       - name: Run migrations and deploy to Cloudflare Workers
         env:
