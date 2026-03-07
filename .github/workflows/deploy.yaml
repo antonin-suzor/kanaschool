@@ -1,22 +1,33 @@
-name: Deploy to Cloudflare Workers
+name: Release and Deploy
 
 on:
   push:
-    branches:
-      - main
+    tags:
+      - 'v*.*.*'
 
 jobs:
-  deploy:
+  release-and-deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+
+      - name: Bump package.json version to match tag
+        run: |
+          jq --arg v ${GITHUB_REF_NAME#v} '.version = $v' package.json > package.json.tmp
+          mv package.json.tmp package.json
+
+      - name: Commit version bump
+        run: |
+          git add package.json
+          git commit -m "Bump app version to ${{ github.ref_name }}"
+          git push origin HEAD:main
 
       - name: Install Bun
-        uses: oven-sh/setup-bun@v1
-        with:
-          bun-version: latest
+        uses: oven-sh/setup-bun@v2
 
       - name: Install dependencies
         run: bun install
@@ -25,10 +36,15 @@ jobs:
         run: bun run build
 
       - name: Run migrations and deploy to Cloudflare Workers
-        run: |
-          bunx wrangler d1 migrations apply D1_DB --remote
-          bunx wrangler deploy --var DISCORD_WEBHOOK_URL:$DISCORD_WEBHOOK_URL
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN_DEPLOY_KANASCHOOL }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          bunx wrangler d1 migrations apply D1_DB --remote
+          bunx wrangler deploy --var DISCORD_WEBHOOK_URL:$DISCORD_WEBHOOK_URL
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
