@@ -1,6 +1,6 @@
 import { command } from '$app/server';
 import { getRequestEvent } from '$app/server';
-import { updatePassword, updateUsername, updateProfileVisibility, deleteAccount } from '$lib/auth';
+import { updatePassword, updateUsername, updateProfileVisibility, deleteAccount, updateProfile } from '$lib/auth';
 import * as v from 'valibot';
 import { error } from '@sveltejs/kit';
 
@@ -19,6 +19,10 @@ const UpdateVisibilitySchema = v.object({
 
 const DeleteAccountSchema = v.object({
     _password: v.string(),
+});
+
+const UpdateProfileSchema = v.object({
+    description: v.nullable(v.string()),
 });
 
 export const changePassword = command(UpdatePasswordSchema, async ({ oldPassword, newPassword }) => {
@@ -95,6 +99,24 @@ export const changeVisibility = command(UpdateVisibilitySchema, async ({ isPubli
     });
 
     return updatedUser;
+});
+
+export const updateUserProfile = command(UpdateProfileSchema, async ({ description }) => {
+    const event = getRequestEvent();
+
+    if (!event.locals.user) {
+        error(401, 'Not authenticated');
+    }
+
+    if (!event.platform?.env.D1_DB) {
+        error(500, 'Database not available');
+    }
+
+    const result = await updateProfile(event.platform.env.D1_DB, event.locals.user.id, description);
+
+    if ('error' in result) {
+        throw new Error(result.error);
+    }
 });
 
 export const deleteUserAccount = command(DeleteAccountSchema, async ({ _password }) => {

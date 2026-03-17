@@ -1,4 +1,5 @@
 import type { D1Database } from '@cloudflare/workers-types';
+import type { PublicProfile } from './types';
 
 export type AuthUser = {
     id: number;
@@ -11,6 +12,9 @@ export type User = {
     name: string;
     password_hash: string;
     is_public: boolean;
+    description: string | null;
+    avatar_key: string | null;
+    banner_key: string | null;
     created_at: string;
     updated_at: string;
     deleted_at: string | null;
@@ -484,14 +488,34 @@ export async function getDiacriticsRatioStats(
     };
 }
 
-export async function getUserPublicProfile(
-    db: D1Database,
-    name: string
-): Promise<(Omit<AuthUser, 'is_public'> & { is_public: number; created_at: string; updated_at: string }) | null> {
+export async function getUserPublicProfile(db: D1Database, name: string): Promise<PublicProfile | null> {
     return db
-        .prepare('SELECT id, name, is_public, created_at, updated_at FROM users WHERE name = ? AND deleted_at IS NULL')
+        .prepare(
+            'SELECT id, name, is_public, description, avatar_key, banner_key, created_at, updated_at FROM users WHERE name = ? AND deleted_at IS NULL'
+        )
         .bind(name)
-        .first<Omit<AuthUser, 'is_public'> & { is_public: number; created_at: string; updated_at: string }>();
+        .first<PublicProfile>();
+}
+
+export async function updateUserProfile(db: D1Database, userId: number, description: string | null): Promise<void> {
+    const now = new Date().toISOString();
+
+    await db
+        .prepare('UPDATE users SET description = ?, updated_at = ? WHERE id = ?')
+        .bind(description, now, userId)
+        .run();
+}
+
+export async function updateUserAvatar(db: D1Database, userId: number, avatarKey: string | null): Promise<void> {
+    const now = new Date().toISOString();
+
+    await db.prepare('UPDATE users SET avatar_key = ?, updated_at = ? WHERE id = ?').bind(avatarKey, now, userId).run();
+}
+
+export async function updateUserBanner(db: D1Database, userId: number, bannerKey: string | null): Promise<void> {
+    const now = new Date().toISOString();
+
+    await db.prepare('UPDATE users SET banner_key = ?, updated_at = ? WHERE id = ?').bind(bannerKey, now, userId).run();
 }
 
 export async function getUserSessionsWithStats(

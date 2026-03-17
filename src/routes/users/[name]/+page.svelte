@@ -3,6 +3,11 @@
 
     let { data }: { data: PageData } = $props();
 
+    function getImageUrl(key: string | null): string | null {
+        if (!key) return null;
+        return `/api/image/${encodeURIComponent(key)}`;
+    }
+
     interface Session {
         id: number;
         hiragana: number;
@@ -48,16 +53,50 @@
 <div class="min-h-screen bg-linear-to-br from-blue-50 to-indigo-100 px-4 py-8">
     <div class="mx-auto max-w-7xl">
         <!-- User Header -->
-        <div class="mb-12 rounded-lg bg-white p-8 shadow-lg">
-            <h1 class="mb-4 text-4xl font-bold text-gray-900">{data.user.name}</h1>
-            <div class="grid gap-4 text-sm text-gray-600 md:grid-cols-2">
-                <div>
-                    <p class="font-semibold text-gray-700">Account created:</p>
-                    <p>{formatDate(data.user.created_at)}</p>
+        <div class="mb-12 overflow-hidden rounded-lg bg-white shadow-lg">
+            <!-- Banner -->
+            {#if data.user.banner_key}
+                <img
+                    src={getImageUrl(data.user.banner_key)}
+                    alt="{data.user.name}'s banner"
+                    class="h-40 w-full object-cover sm:h-52"
+                />
+            {:else}
+                <div class="h-24 w-full bg-linear-to-r from-blue-200 to-indigo-300 sm:h-32"></div>
+            {/if}
+
+            <div class="p-6 sm:p-8">
+                <!-- Avatar + name row -->
+                <div class="-mt-12 mb-4 flex items-end gap-4 sm:-mt-14">
+                    {#if data.user.avatar_key}
+                        <img
+                            src={getImageUrl(data.user.avatar_key)}
+                            alt="{data.user.name}'s avatar"
+                            class="h-20 w-20 shrink-0 rounded-full border-4 border-white object-cover shadow sm:h-24 sm:w-24"
+                        />
+                    {:else}
+                        <div
+                            class="flex h-20 w-20 shrink-0 items-center justify-center rounded-full border-4 border-white bg-indigo-100 text-3xl font-bold text-indigo-500 shadow sm:h-24 sm:w-24"
+                        >
+                            {data.user.name[0].toUpperCase()}
+                        </div>
+                    {/if}
+                    <h1 class="mb-1 text-2xl font-bold text-gray-900 sm:text-4xl">{data.user.name}</h1>
                 </div>
-                <div>
-                    <p class="font-semibold text-gray-700">Last updated:</p>
-                    <p>{formatDate(data.user.updated_at)}</p>
+
+                {#if data.user.description}
+                    <p class="mb-4 max-w-prose text-sm whitespace-pre-wrap text-gray-700">{data.user.description}</p>
+                {/if}
+
+                <div class="grid gap-4 text-sm text-gray-600 md:grid-cols-2">
+                    <div>
+                        <p class="font-semibold text-gray-700">Account created:</p>
+                        <p>{formatDate(data.user.created_at)}</p>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-gray-700">Last updated:</p>
+                        <p>{formatDate(data.user.updated_at)}</p>
+                    </div>
                 </div>
             </div>
         </div>
