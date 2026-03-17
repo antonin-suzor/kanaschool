@@ -24,3 +24,7 @@ binding = "D1_DB"
 database_name = "kanaschool-d1-prod"
 database_id = "99ae80c8-45bf-49fa-b01d-d565f7bcab4e"
 migrations_dir = "migrations"
+
+[[r2_buckets]]
+binding = "R2_BUCKET"
+bucket_name = "kanaschool-uploads"

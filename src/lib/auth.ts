@@ -3,6 +3,8 @@ import type { D1Database } from '@cloudflare/workers-types';
 import type { AuthUser } from './types';
 import * as db from './db';
 
+const MAX_DESCRIPTION_LENGTH = 500;
+
 export function isValidUsername(username: string): boolean {
     if (!username || username.trim().length === 0) {
         return false;
@@ -182,6 +184,23 @@ export async function deleteAccount(
         return { success: true };
     } catch (error) {
         return { error: 'Failed to delete account' };
+    }
+}
+
+export async function updateProfile(
+    database: D1Database,
+    userId: number,
+    description: string | null
+): Promise<{ success: true } | { error: string }> {
+    if (description !== null && description.length > MAX_DESCRIPTION_LENGTH) {
+        return { error: `Description must be ${MAX_DESCRIPTION_LENGTH} characters or fewer` };
+    }
+
+    try {
+        await db.updateUserProfile(database, userId, description === '' ? null : description);
+        return { success: true };
+    } catch (error) {
+        return { error: 'Failed to update profile' };
     }
 }
 
